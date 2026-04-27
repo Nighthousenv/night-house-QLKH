@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main", "master"] # Chạy khi có code mới đẩy lên nhánh main hoặc master
+    branches: ["main", "master"]
   workflow_dispatch:
 
 permissions:
@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Thêm dòng này để ép hệ thống dùng Node 24 cho các actions
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24" # Đã nâng cấp từ 20 lên 24
           
       - name: Install dependencies
         run: npm install
@@ -32,7 +35,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Dòng này sẽ lấy API Key từ Bước 1 bạn đã cài để đưa vào web
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           
       - name: Upload artifact
@@ -46,6 +48,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    # Thêm dòng env tương tự ở tầng deploy để đồng bộ
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
