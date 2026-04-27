@@ -1,0 +1,6 @@
+{
+  "name": "NIGHT HOUSE",
+  "description": "Ứng dụng quản lý lịch đặt phòng cho 3 cơ sở homestay với các biểu đồ trực quan theo tháng, theo giờ và tùy chọn ngày.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

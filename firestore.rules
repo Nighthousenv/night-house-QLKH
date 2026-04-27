@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isRootAdmin() {
+      return request.auth != null && request.auth.token.email.lower() == 'longvuptk10@gmail.com';
+    }
+
+    function isAdmin() {
+      return request.auth != null && (
+        isRootAdmin() || 
+        get(/databases/$(database)/documents/authorized_users/$(request.auth.token.email.lower())).data.role == 'admin'
+      );
+    }
+
+    // Authorized Users collection
+    match /authorized_users/{email} {
+      allow read: if true;
+      // Allow self-registration or admin management
+      allow create: if request.auth != null && (request.auth.token.email.lower() == email.lower() || isAdmin());
+      allow update, delete: if isAdmin();
+    }
+
+    // Homestays: Public access
+    match /homestays/{homestayId} {
+      allow read, write: if true;
+
+      match /rooms/{roomId} {
+        allow read, write: if true;
+      }
+    }
+
+    // Bookings: Public access
+    match /bookings/{bookingId} {
+      allow read, write: if true;
+    }
+
+    // Staffs: Public access
+    match /staffs/{staffId} {
+      allow read, write: if true;
+    }
+  }
+}

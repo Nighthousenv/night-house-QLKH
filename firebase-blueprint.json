@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Homestay": {
+      "title": "Homestay",
+      "description": "A homestay location with multiple rooms.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "roomCount": { "type": "integer" }
+      },
+      "required": ["name", "roomCount"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "A room within a homestay.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "homestayId": { "type": "string" }
+      },
+      "required": ["name", "homestayId"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "A reservation for a room.",
+      "type": "object",
+      "properties": {
+        "homestayId": { "type": "string" },
+        "roomId": { "type": "string" },
+        "checkIn": { "type": "string", "format": "date-time" },
+        "checkOut": { "type": "string", "format": "date-time" },
+        "price": { "type": "number" },
+        "depositAmount": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["Deposit", "Paid"] },
+        "userId": { "type": "string" },
+        "staffName": { "type": "string" },
+        "staffColor": { "type": "string" },
+        "isEdited": { "type": "boolean" },
+        "history": { 
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      },
+      "required": ["homestayId", "roomId", "checkIn", "checkOut", "price", "userId"]
+    },
+    "Staff": {
+      "title": "Staff",
+      "description": "Staff members who can enter bookings.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "color": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["name", "color", "userId"]
+    }
+  },
+  "firestore": {
+    "/homestays/{homestayId}": {
+      "schema": "Homestay",
+      "description": "Information about a homestay."
+    },
+    "/homestays/{homestayId}/rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Rooms in a homestay."
+    },
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Individual room bookings."
+    },
+    "/staffs/{staffId}": {
+      "schema": "Staff",
+      "description": "Staff directory."
+    }
+  }
+}
